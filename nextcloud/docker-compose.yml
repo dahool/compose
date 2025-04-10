@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+
+  app:
+    image: 'nextcloud-ffpmeg:latest'
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: nextcloud-app
+    ports:
+      - 8080:80
+    volumes:
+      - /data/docker/nextcloud/www:/var/www/html
+      - /nas/vault1/nextcloud:/var/www/html/data
+      - /dev/urandom:/dev/urandom:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    restart: 'unless-stopped'
+    env_file: # this is only used the first time, need to edit config.php to make changes
+      - stack.env
+    networks:
+      - internal
+      - redis-shared
+      - postgres_default
+
+  hpb:
+    image: nextcloud/aio-talk:latest
+    restart: 'unless-stopped'
+    container_name: nextcloud-talk-hpb
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    env_file:
+      - stack.env
+    networks:
+      - internal
+    ports:
+      - 8081:8081
+
+networks:
+  internal:
+  redis-shared:
+    external: true
+  postgres_default:
+    external: true
