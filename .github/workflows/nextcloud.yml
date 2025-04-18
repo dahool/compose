@@ -26,6 +26,6 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: "nextcloud"
+          context: "./nextcloud/Dockerfile"
           push: true
           tags: dahool/nextcloud-ffpmeg:latest
