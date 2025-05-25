@@ -5,6 +5,11 @@ name: Publish Cronicle
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - cronicle/**
 
 jobs:
   docker:
