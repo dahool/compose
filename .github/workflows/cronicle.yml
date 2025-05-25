@@ -28,4 +28,4 @@ jobs:
         with:
           context: "{{defaultContext}}:cronicle"
           push: true
-          tags: dahool/cronicle:latest dahool/cronicle:0.9.80
+          tags: dahool/cronicle:latest,dahool/cronicle:0.9.80
