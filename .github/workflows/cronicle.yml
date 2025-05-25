@@ -27,5 +27,6 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: "{{defaultContext}}:cronicle"
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: dahool/cronicle:latest,dahool/cronicle:0.9.80
