@@ -11,6 +11,7 @@ RUN apt update -y && apt install curl unzip python3 -y
 #    cp rclone /usr/bin
 
 RUN curl https://rclone.org/install.sh | bash
+RUN rclone config touch
 
 WORKDIR /opt/cronicle
 
