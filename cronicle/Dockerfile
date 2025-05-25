@@ -1,6 +1,7 @@
 FROM node:lts
 
 ENV CRONICLE_VERSION=0.9.80
+ENV RCLONE_CONFIG=/opt/rclone/rclone.conf
 
 # install the tools I may going to need to run jobs
 RUN apt update -y && apt install curl unzip python3 -y
@@ -11,7 +12,6 @@ RUN apt update -y && apt install curl unzip python3 -y
 #    cp rclone /usr/bin
 
 RUN curl https://rclone.org/install.sh | bash
-RUN rclone config touch
 
 WORKDIR /opt/cronicle
 
