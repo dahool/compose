@@ -1,17 +1,8 @@
-FROM node:lts
+FROM node:lts AS builder
 
 ENV CRONICLE_VERSION=0.9.80
-ENV RCLONE_CONFIG=/opt/rclone/rclone.conf
 
-# install the tools I may going to need to run jobs
-RUN apt update -y && apt install curl unzip python3 -y
-
-#RUN curl -L -o /tmp/rclone-current-linux-amd64.zip https://downloads.rclone.org/rclone-current-linux-amd64.zip
-#RUN unzip /tmp/rclone-current-linux-amd64.zip -d /tmp/ && \
-#    cd /tmp/rclone-*-linux-amd64 && \
-#    cp rclone /usr/bin
-
-RUN curl https://rclone.org/install.sh | bash
+RUN apt update -y && apt install curl unzip -y
 
 WORKDIR /opt/cronicle
 
@@ -23,14 +14,21 @@ RUN tar zxvf /tmp/Cronicle-${CRONICLE_VERSION}.tar.gz -C /tmp/ && \
 
 COPY ./patches /tmp/patches
 RUN patch -p3 < /tmp/patches/engine.patch lib/engine.js
-
 COPY docker-entrypoint.js ./bin/
 
+FROM node:lts-alpine
+
+RUN apk add --no-cache python3 rclone procps curl
+
+COPY --from=builder /opt/cronicle/ /opt/cronicle/
+WORKDIR /opt/cronicle
+
+ENV RCLONE_CONFIG=/opt/rclone/rclone.conf
 ENV CRONICLE_foreground=1
 ENV CRONICLE_echo=1
 ENV CRONICLE_color=1
 ENV debug_level=1
 
-RUN node bin/build.js dist && bin/control.sh setup
+RUN node bin/build.js dist && sh bin/control.sh setup
 
 CMD ["node", "bin/docker-entrypoint.js"]
